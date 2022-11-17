@@ -12,7 +12,7 @@ from mesmerize_core import (
     CaimanSeriesExtensions,
     set_parent_raw_data_path,
 )
-from mesmerize_core.batch_utils import DATAFRAME_COLUMNS, COMPUTE_BACKEND_SUBPROCESS, get_full_raw_data_path
+from mesmerize_core.batch_utils import DATAFRAME_COLUMNS, get_full_raw_data_path
 from mesmerize_core.utils import IS_WINDOWS
 from uuid import uuid4
 from typing import *
@@ -564,20 +564,6 @@ def test_cnmf():
         cnmf_reconstructed_background, cnmf_reconstructed_background_actual, rtol=1e-2, atol=1e-10
     )
 
-    # test to check old numpy reconstructed file = get_rcm()
-    # + test to check get_rcb()
-    cnmf_reconstructed_movie_AouterC_plus_bouterf = df.iloc[-1].cnmf.get_rcm("all") + df.iloc[-1].cnmf.get_rcb()
-    cnmf_reconstructed_movie_AouterC_plus_bouterf_actual = numpy.load(
-        ground_truths_dir.joinpath("cnmf", "reconstructed_movie.npy")
-    )
-    numpy.testing.assert_allclose(
-        cnmf_reconstructed_movie_AouterC_plus_bouterf, cnmf_reconstructed_movie_AouterC_plus_bouterf_actual, rtol=1e-2, atol=1e-10
-    )
-    reconstructed_AouterC_bouterf_actual = cnmf_reconstructed_movie_AouterC_actual + cnmf_reconstructed_background_actual
-    numpy.testing.assert_allclose(
-        cnmf_reconstructed_movie_AouterC_plus_bouterf, reconstructed_AouterC_bouterf_actual, rtol=1e-2, atol=1e-10
-    )
-
     # test to check get_residuals()
     cnmf_residuals = df.iloc[-1].cnmf.get_residuals()
     cnmf_residuals_actual = numpy.load(ground_truths_dir.joinpath("cnmf", "residuals.npy"))
@@ -988,21 +974,6 @@ def test_cnmfe():
         ground_truths_dir.joinpath("cnmfe_full", "cnmfe_reconstructed_background.npy"))
     numpy.testing.assert_allclose(
         cnmfe_reconstructed_background, cnmfe_reconstructed_background_actual, rtol=1e2, atol=1e-10
-    )
-
-    # test to check old numpy reconstructed file = get_rcm()
-    # + test to check get_rcb()
-    cnmfe_reconstructed_movie_AouterC_plus_bouterf = df.iloc[-1].cnmf.get_rcm("all") + df.iloc[
-        -1].cnmf.get_rcb()
-    cnmfe_reconstructed_movie_AouterC_plus_bouterf_actual = numpy.load(
-        ground_truths_dir.joinpath("cnmfe_full", "cnmfe_reconstructed_movie.npy")
-    )
-    numpy.testing.assert_allclose(
-        cnmfe_reconstructed_movie_AouterC_plus_bouterf, cnmfe_reconstructed_movie_AouterC_plus_bouterf_actual, rtol=1e2, atol=1e-10
-    )
-    reconstructed_AouterC_plus_bouterf_actual = cnmfe_reconstructed_movie_AouterC_actual + cnmfe_reconstructed_background_actual
-    numpy.testing.assert_allclose(
-        cnmfe_reconstructed_movie_AouterC_plus_bouterf, reconstructed_AouterC_plus_bouterf_actual, rtol=1e2, atol=1e-10
     )
 
     # test to check get_residuals()
